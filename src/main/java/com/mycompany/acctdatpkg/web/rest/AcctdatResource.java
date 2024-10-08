@@ -193,7 +193,12 @@ public class AcctdatResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of acctdats in body.
      */
     @GetMapping("/acctdats")
-    public ResponseEntity<List<Acctdat>> getAllAcctdats(Pageable pageable) {
+    public ResponseEntity<List<Acctdat>> getAllAcctdats(@RequestParam(name = "acctId", required = false) Integer acctId, Pageable pageable) {
+        if(acctId != null) {
+            log.debug("REST request to get a list of Acctdats by acctId");
+            List<Acctdat> acctdats = acctdatRepository.findByAcctId(acctId);
+            return ResponseEntity.ok().body(acctdats);
+        }
         log.debug("REST request to get a page of Acctdats");
         Page<Acctdat> page = acctdatRepository.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
